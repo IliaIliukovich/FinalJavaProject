@@ -1,10 +1,10 @@
+
 package com.epam.periodicals.client;
 
 import com.epam.periodicals.shared.Journal;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dev.resource.impl.PathPrefix.Judgement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -13,22 +13,15 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import javafx.scene.control.cell.CheckBoxTableCell;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -37,8 +30,6 @@ import java.util.List;
 public class Periodicals implements EntryPoint {
 
 	private final PeriodicalServiceAsync periodicalService = GWT.create(PeriodicalService.class);
-
-	
 	
 	TabLayoutPanel mainPanel = new TabLayoutPanel(1.5, Unit.EM);
 	
@@ -53,7 +44,6 @@ public class Periodicals implements EntryPoint {
 	private Button signout = new Button("Sign out");
 	private TextBox login = new TextBox();
 	private TextBox login2 = new TextBox();
-	private TextBox sum = new TextBox();
 	private PasswordTextBox pwd = new PasswordTextBox();
 	private PasswordTextBox pwd2 = new PasswordTextBox();
 	private PasswordTextBox pwd3 = new PasswordTextBox();
@@ -62,6 +52,7 @@ public class Periodicals implements EntryPoint {
 	private Label text3Label = new Label();
 	private Label text4Label = new Label();
 	private Label errorLabel = new Label();
+	private Label sum = new Label();
 	
 	private FlexTable listFlexTable = new FlexTable();
 	private FlexTable listFlexTable2 = new FlexTable();
@@ -116,7 +107,6 @@ public class Periodicals implements EntryPoint {
 			}
 		});
 
-		// load list of journals
 		loadListOfJournals();
 		
 	}
@@ -127,7 +117,10 @@ public class Periodicals implements EntryPoint {
 		
 		listOfJournals.clear();
 		listFlexTable.removeAllRows();
+		listFlexTable.clear();
 		rawsAdded = 0;
+		
+		journalListPanel.add(listFlexTable);
 		listFlexTable.setText(0, 0, "Journal");
 	    listFlexTable.setText(0, 1, "Description");
 	    listFlexTable.setText(0, 2, "Price (RUB)");
@@ -179,7 +172,56 @@ public class Periodicals implements EntryPoint {
 					text4Label.setText(result);
 					logPanel.add(text4Label);
 					logPanel.add(signout);
-					
+					signout.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+
+							// clear and update log panel
+							logPanel.clear();
+                            errorLabel.setText("");
+							login.setText("");
+							pwd.setText("");
+							login2.setText("");
+							pwd2.setText("");
+							pwd3.setText("");
+							signinButton.setEnabled(true);
+							logPanel.add(text1Label);
+							text1Label.setText("Enter your login:");
+							logPanel.add(login);
+							logPanel.add(text2Label);
+							text2Label.setText("Enter your password:");
+							logPanel.add(pwd);
+							logPanel.add(signinButton);
+							logPanel.add(regButton);
+							logPanel.add(errorLabel);
+
+							// remove MyListPanel
+                            mainPanel.remove(myJournalListPanel);
+							myJournalListPanel.clear();
+                            listFlexTable2.removeAllRows();
+                            listFlexTable2.clear();
+
+                            // clear Journal List panel
+                            journalListPanel.clear();;
+							listFlexTable.removeAllRows();
+									listFlexTable.clear();
+							journalListPanel.remove(addPanel);
+							journalNameTextBox.setText("");
+							journalDescriptionTextBox.setText("");
+							journalPriceTextBox.setText("");
+							
+							// clear variables
+							listOfMyJournals.clear();
+                            listOfJournals.clear();
+							selectedIds.clear();
+							rawsAdded = 0;
+							sumToPay = 0L;
+							
+							loadListOfJournals();
+						}
+					});
+
 					if (nameToServer == "admin") {
 						adminSigned();
 					} else {
@@ -198,7 +240,8 @@ public class Periodicals implements EntryPoint {
 	// load data for signed user
 	public void userSigned() {
 		
-		
+		myJournalListPanel.add(listFlexTable2);
+
 		for (int i = 1; i < listFlexTable.getRowCount(); i++) {
 			final Long id = listOfJournals.get(i-1).getId();
 			final Button addButton = new Button("Add");
@@ -211,12 +254,11 @@ public class Periodicals implements EntryPoint {
 					@Override
 					public void onFailure(Throwable caught) {
 					}
-// TODO
+
 					@Override
 					public void onSuccess(Void result) {
 						loadListOfMyJournals();
 						loadSumToPay();
-						loadListOfPaidJournals();
 					}
 				});
     	      }
@@ -229,16 +271,15 @@ public class Periodicals implements EntryPoint {
 		
 		loadListOfMyJournals();
 		loadSumToPay();
-		loadListOfPaidJournals();
 	}
-
 	
 
 	// load list of my journals
-	private void loadListOfMyJournals() {
+	public void loadListOfMyJournals() {
 			
 		listOfMyJournals.clear();
-		listFlexTable2.removeAllRows();
+//		listFlexTable2.removeAllRows();
+//		listFlexTable2.clear();
 		
 		listFlexTable2.setText(0, 0, "Journal");
 	    listFlexTable2.setText(0, 1, "Description");
@@ -279,7 +320,7 @@ public class Periodicals implements EntryPoint {
 	}
 
 
-	private void loadSumToPay() {
+	public void loadSumToPay() {
 		
 		periodicalService.sumToPay(new AsyncCallback<Long>() {
 
@@ -297,16 +338,9 @@ public class Periodicals implements EntryPoint {
 	}
 
 
-	private void loadListOfPaidJournals() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	
-	
 	// load data for signed admin
 	public void adminSigned() {
+		
 		addPanel.add(journalNameTextBox);
 	    addPanel.add(journalDescriptionTextBox);
 	    addPanel.add(journalPriceTextBox);
@@ -427,17 +461,6 @@ public class Periodicals implements EntryPoint {
 	}
 	
 	
-	class AddToMyListButton implements ClickHandler {
-
-		@Override
-		public void onClick(ClickEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-	
 	// The add button logic (for admin)
 	class ListHandler implements ClickHandler, KeyUpHandler {
 		
@@ -502,7 +525,12 @@ public class Periodicals implements EntryPoint {
 
 				@Override
 				public void onSuccess(Void result) {
+					journalListPanel.remove(addPanel);
+					journalListPanel.remove(saveAddedJournalsButton);
 					loadListOfJournals();
+					journalListPanel.add(addPanel);
+					journalListPanel.add(saveAddedJournalsButton);
+					saveAddedJournalsButton.setEnabled(true);
 				}
 			});
 		}

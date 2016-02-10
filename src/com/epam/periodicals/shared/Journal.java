@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class Journal implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String name;
@@ -15,7 +12,6 @@ public class Journal implements Serializable{
 	
 	
 	public Journal() {
-		
 	}
 	
 	public Journal(Long id, String name, String description, Long price) {
@@ -24,6 +20,7 @@ public class Journal implements Serializable{
 		this.description = description;
 		this.price = price;
 	}
+	
 	public Journal(String name, String description, Long price) {
 		this.name = name;
 		this.description = description;

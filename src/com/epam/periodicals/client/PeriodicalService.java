@@ -13,22 +13,18 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface PeriodicalService extends RemoteService {
 	
 	// client to server
-	String loginServer(boolean newUser, String nameToServer, String pwdToServer);	
+	String loginServer(boolean newUser, String nameToServer, String pwdToServer);
+	
+	void signoutServer();
 	
 	void addNewJournals(List<Journal> journals);
 	
 	void addMyJournal(Long journalId);
 
-	void removeMyJournal(Long removeJournalId);
-
-	void pay();
-	
 	// server to client
 	List<Journal> loadData(); 
 
 	List<Long> selectedIDs(); 
-
-	List<Long> paidIDs(); 
 
 	Long sumToPay(); 
 

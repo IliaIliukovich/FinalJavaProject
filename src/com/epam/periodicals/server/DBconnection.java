@@ -41,9 +41,6 @@ public class DBconnection {
 			UserMapper userMapper = session.getMapper(UserMapper.class);
 			User user = userMapper.getUser(nameToServer);
 			if (user != null) {
-				System.out.println("user we compare to " + user.getLogin());
-				System.out.println("user we compare to " + user.getPassword());
-				System.out.println("compare");
 				if (user.getPassword().equals(pwdToServer)){
 					return true;
 				} else {
@@ -70,7 +67,6 @@ public class DBconnection {
 			UserMapper userMapper = session.getMapper(UserMapper.class);
 			User user = userMapper.getUser(nameToServer);
 			if (user != null) {
-				System.out.println("user already exist " + user.getLogin());
 				return false;
 			} else {
 				User newUser = new User(0L, nameToServer, pwdToServer);
@@ -135,7 +131,6 @@ public class DBconnection {
 	}
 	
 	
-	
 	public static List<Table1> getTable1(Long user_id) throws IOException {
 
 		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
@@ -169,56 +164,6 @@ public class DBconnection {
 		
 	}
 	
-	public static void deleteTable1(Long user_id) throws IOException {
-
-		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
-		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
-		sqlSessionFactory.getConfiguration().addMapper(Table1Mapper.class);
-		
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			Table1Mapper table1Mapper = session.getMapper(Table1Mapper.class);
-			table1Mapper.deleteTable1(user_id);
-			session.commit();
-		} finally {
-			session.close();
-		}
-		
-	}
-	
-	
-	public static List<Table2> getTable2(Long user_id) throws IOException {
-
-		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
-		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
-		sqlSessionFactory.getConfiguration().addMapper(Table2Mapper.class);
-		
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			Table2Mapper table2Mapper = session.getMapper(Table2Mapper.class);
-			return table2Mapper.getTable2(user_id);
-		} finally {
-			session.close();
-		}
-		
-	}
-	
-	public static void addTable2(Table2 table2) throws IOException {
-
-		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
-		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
-		sqlSessionFactory.getConfiguration().addMapper(Table2Mapper.class);
-		
-		SqlSession session = sqlSessionFactory.openSession();
-		try {
-			Table2Mapper table2Mapper = session.getMapper(Table2Mapper.class);
-			table2Mapper.addTable2(table2);
-				session.commit();
-		} finally {
-			session.close();
-		}
-		
-	}
 	
 }
 
