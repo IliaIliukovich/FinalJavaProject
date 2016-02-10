@@ -10,7 +10,7 @@ public interface JournalMapper {
 
 	@Select("select * from journals")
 	List<Journal> getJournal();
-	
+
 	@Select("select * from journals where id = #{id}")
 	Journal getJournalbyId(Long id);
 	

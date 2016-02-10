@@ -14,20 +14,13 @@ public class DBconnection {
 	
 	private static SqlSessionFactory sqlSessionFactory;
 
-	private static void execute() throws IOException {
-
-			Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
-			sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
-			
-			sqlSessionFactory.getConfiguration().addMapper(JournalMapper.class);
-			sqlSessionFactory.getConfiguration().addMapper(UserMapper.class);
-			sqlSessionFactory.getConfiguration().addMapper(Table1Mapper.class);
-			sqlSessionFactory.getConfiguration().addMapper(Table2Mapper.class);
-	}
-
 	
 	public static User getUser(String nameToServer, String pwdToServer) throws IOException {
-		execute();
+		
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(UserMapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			UserMapper userMapper = session.getMapper(UserMapper.class);
@@ -40,7 +33,9 @@ public class DBconnection {
 	
 	public static boolean verifyUser(String nameToServer, String pwdToServer) throws IOException {
 		
-		execute();
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(UserMapper.class);
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			UserMapper userMapper = session.getMapper(UserMapper.class);
@@ -65,7 +60,11 @@ public class DBconnection {
 	}
 
 	public static boolean addUser(String nameToServer, String pwdToServer) throws IOException {
-		execute();
+
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(UserMapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			UserMapper userMapper = session.getMapper(UserMapper.class);
@@ -87,7 +86,12 @@ public class DBconnection {
 
 
 	public static List<Journal> loadJournals() throws IOException {
-		execute();
+
+		
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(JournalMapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			JournalMapper journalMapper = session.getMapper(JournalMapper.class);
@@ -99,7 +103,11 @@ public class DBconnection {
 
 
 	public static Journal getJournalById(Long id) throws IOException {
-		execute();
+		
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(JournalMapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			JournalMapper journalMapper = session.getMapper(JournalMapper.class);
@@ -110,7 +118,11 @@ public class DBconnection {
 	}
 	
 	public static void addJournal(Journal journal) throws IOException {
-		execute();
+
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(JournalMapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			JournalMapper journalMapper = session.getMapper(JournalMapper.class);
@@ -125,7 +137,11 @@ public class DBconnection {
 	
 	
 	public static List<Table1> getTable1(Long user_id) throws IOException {
-		execute();
+
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(Table1Mapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			Table1Mapper table1Mapper = session.getMapper(Table1Mapper.class);
@@ -137,7 +153,11 @@ public class DBconnection {
 	}
 	
 	public static void addTable1(Table1 table1) throws IOException {
-		execute();
+
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(Table1Mapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			Table1Mapper table1Mapper = session.getMapper(Table1Mapper.class);
@@ -150,7 +170,11 @@ public class DBconnection {
 	}
 	
 	public static void deleteTable1(Long user_id) throws IOException {
-		execute();
+
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(Table1Mapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			Table1Mapper table1Mapper = session.getMapper(Table1Mapper.class);
@@ -164,7 +188,11 @@ public class DBconnection {
 	
 	
 	public static List<Table2> getTable2(Long user_id) throws IOException {
-		execute();
+
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(Table2Mapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			Table2Mapper table2Mapper = session.getMapper(Table2Mapper.class);
@@ -176,7 +204,11 @@ public class DBconnection {
 	}
 	
 	public static void addTable2(Table2 table2) throws IOException {
-		execute();
+
+		Reader resourceReader = Resources.getResourceAsReader("com/epam/periodicals/server/config.xml");
+		sqlSessionFactory = new SqlSessionFactoryBuilder().build(resourceReader);
+		sqlSessionFactory.getConfiguration().addMapper(Table2Mapper.class);
+		
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			Table2Mapper table2Mapper = session.getMapper(Table2Mapper.class);

@@ -81,12 +81,11 @@ public class PeriodicalServiceImpl extends RemoteServiceServlet implements Perio
 			System.out.println("adding " + journalId);
 			try {
 				Journal journalById = DBconnection.getJournalById(journalId);
+				System.out.println("!!!");
 				if (!journalById.equals(null)) {
-					Table2 table2 = new Table2(user.getId(),journalById.getId());
-					if (table2.equals(null)){
-						Table1 table1 = new Table1(user.getId(),journalById.getId());
-						DBconnection.addTable1(table1);
-					}
+					System.out.println("!!!!");
+					Table1 table1 = new Table1(user.getId(),journalById.getId());
+					DBconnection.addTable1(table1);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -175,6 +174,7 @@ public class PeriodicalServiceImpl extends RemoteServiceServlet implements Perio
 					for (Journal journal : journalList) {
 						sum += journal.getPrice();
 					}
+					System.out.println(sum);
 					return sum;
 				}
 			} catch (IOException e) {

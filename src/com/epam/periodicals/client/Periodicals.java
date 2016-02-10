@@ -4,6 +4,7 @@ import com.epam.periodicals.shared.Journal;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dev.resource.impl.PathPrefix.Judgement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -35,7 +36,7 @@ import java.util.List;
 
 public class Periodicals implements EntryPoint {
 
-	private final PeriodicalServiceAsync signinService = GWT.create(PeriodicalService.class);
+	private final PeriodicalServiceAsync periodicalService = GWT.create(PeriodicalService.class);
 
 	
 	
@@ -43,6 +44,7 @@ public class Periodicals implements EntryPoint {
 	
 	private VerticalPanel logPanel = new VerticalPanel();
 	private VerticalPanel journalListPanel = new VerticalPanel();
+	private VerticalPanel myJournalListPanel = new VerticalPanel();
 	
 	private Button signinButton = new Button("Sign in");
 	private Button signinButton2 = new Button("Sign in");
@@ -51,6 +53,7 @@ public class Periodicals implements EntryPoint {
 	private Button signout = new Button("Sign out");
 	private TextBox login = new TextBox();
 	private TextBox login2 = new TextBox();
+	private TextBox sum = new TextBox();
 	private PasswordTextBox pwd = new PasswordTextBox();
 	private PasswordTextBox pwd2 = new PasswordTextBox();
 	private PasswordTextBox pwd3 = new PasswordTextBox();
@@ -61,6 +64,7 @@ public class Periodicals implements EntryPoint {
 	private Label errorLabel = new Label();
 	
 	private FlexTable listFlexTable = new FlexTable();
+	private FlexTable listFlexTable2 = new FlexTable();
 	private HorizontalPanel addPanel = new HorizontalPanel();
 	private TextBox journalNameTextBox = new TextBox();
 	private TextBox journalDescriptionTextBox = new TextBox();
@@ -71,7 +75,10 @@ public class Periodicals implements EntryPoint {
 	
 	
 	private ArrayList<Journal> listOfJournals = new ArrayList<>();
+	private ArrayList<Journal> listOfMyJournals = new ArrayList<>();
+	private List<Long> selectedIds = new ArrayList<>();
 	private int rawsAdded;
+	private Long sumToPay;
 	
 	public void onModuleLoad() {
 		
@@ -130,7 +137,7 @@ public class Periodicals implements EntryPoint {
 	    listFlexTable.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
 	    listFlexTable.getCellFormatter().addStyleName(0, 3, "watchListRemoveColumn");
 	    
-		signinService.loadData(new AsyncCallback<List<Journal>>() {
+		periodicalService.loadData(new AsyncCallback<List<Journal>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -141,7 +148,7 @@ public class Periodicals implements EntryPoint {
 				
 				for (Journal journal : result) {
 					
-					final Journal displayJournal = new Journal(journal.getName(), journal.getDescription(), journal.getPrice());
+					final Journal displayJournal = journal;
 					int row = listFlexTable.getRowCount();
 					listOfJournals.add(displayJournal);
 		    	    listFlexTable.setText(row, 0, journal.getName());
@@ -159,7 +166,7 @@ public class Periodicals implements EntryPoint {
 		
 		if (!nameToServer.isEmpty() && !pwdToServer.isEmpty()) {
 		
-			signinService.loginServer(isNew, nameToServer, pwdToServer, new AsyncCallback<String>() {
+			periodicalService.loginServer(isNew, nameToServer, pwdToServer, new AsyncCallback<String>() {
 				public void onFailure(Throwable caught) {
 					errorLabel.setText("Incorrect name or password. Please try again");
 					signinButton.setEnabled(true);
@@ -191,56 +198,112 @@ public class Periodicals implements EntryPoint {
 	// load data for signed user
 	public void userSigned() {
 		
-//		for (int i = 1; i < listFlexTable.getRowCount(); i++) {
-//			final Button addButton = new Button("Add");
-//			addButton.addStyleDependentName("remove");
-//			addButton.addClickHandler(new ClickHandler() {
-//    	      public void onClick(ClickEvent event) {
-//    	    	  addButton.setEnabled(false);
-//    	      }
-//    	    });
-//    	    listFlexTable.setWidget(i, 3, addButton);
+		
+		for (int i = 1; i < listFlexTable.getRowCount(); i++) {
+			final Long id = listOfJournals.get(i-1).getId();
+			final Button addButton = new Button("Add");
+			addButton.addStyleDependentName("remove");
+			addButton.addClickHandler(new ClickHandler() {
+    	      public void onClick(ClickEvent event) {
+    	    	  addButton.setEnabled(false);
+    	    	  periodicalService.addMyJournal(id, new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+					}
+// TODO
+					@Override
+					public void onSuccess(Void result) {
+						loadListOfMyJournals();
+						loadSumToPay();
+						loadListOfPaidJournals();
+					}
+				});
+    	      }
+    	    });
+    	    listFlexTable.setWidget(i, 3, addButton);
+		}
 			
-			
-			
-//			
-//			
-//			
-//			CheckBox checkbox = new CheckBox();
-//			listFlexTable.setWidget(i+1, 3, checkbox);
-//			checkList.add(checkbox);
-//		}
-//		final Button addSelectedJournals = new Button("Add journals to my list");
-//		journalListPanel.add(addSelectedJournals);
-//		addSelectedJournals.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				addSelectedJournals.setEnabled(false);
-//				List<Long> idList = new ArrayList<>();
-//				for (int i = 0; i < checkList.size(); i++) {
-//					if(!checkList.get(i).getValue()) {
-//						idList.add(listOfJournals.get(i).getId());
-//					}
-//					signinService.addMyJournals(idList, new AsyncCallback<Void>() {
-//
-//						@Override
-//						public void onFailure(Throwable caught) {
-//							
-//						}
-//
-//						@Override
-//						public void onSuccess(Void result) {
-//							// TODO Auto-generated method stub
-//							
-//						}
-//					});
-//				}	
-//			}
-//		});	
-			
-		mainPanel.add(new HTML("the other content"), "My List");		
+		myJournalListPanel.add(listFlexTable2);
+		mainPanel.add(myJournalListPanel, "My List");
+		
+		loadListOfMyJournals();
+		loadSumToPay();
+		loadListOfPaidJournals();
 	}
 
+	
+
+	// load list of my journals
+	private void loadListOfMyJournals() {
+			
+		listOfMyJournals.clear();
+		listFlexTable2.removeAllRows();
+		
+		listFlexTable2.setText(0, 0, "Journal");
+	    listFlexTable2.setText(0, 1, "Description");
+	    listFlexTable2.setText(0, 2, "Price (RUB)");
+	    listFlexTable2.getRowFormatter().addStyleName(0, "watchListHeader");
+	    listFlexTable2.addStyleName("watchList");
+	    listFlexTable2.setCellPadding(6);
+	    listFlexTable2.getCellFormatter().addStyleName(0, 2, "watchListNumericColumn");
+	    listFlexTable2.getCellFormatter().addStyleName(0, 3, "watchListRemoveColumn");
+		
+		periodicalService.selectedIDs(new AsyncCallback<List<Long>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(List<Long> result) {
+				for (Long ids : result) {
+					for (Journal list : listOfJournals) {
+						if (list.getId().equals(ids)) {
+							listOfMyJournals.add(list);
+							Button addedButton = new Button("Added");
+							addedButton.setEnabled(false);
+							listFlexTable.setWidget(listOfJournals.indexOf(list)+1, 3, addedButton);
+							int row = listFlexTable2.getRowCount();
+				    	    listFlexTable2.setText(row, 0, list.getName());
+				    	    listFlexTable2.setText(row, 1, list.getDescription());
+				    	    listFlexTable2.setText(row, 2, String.valueOf(list.getPrice()));
+						}
+						
+					}
+				}
+			}
+		});
+		
+		
+	}
+
+
+	private void loadSumToPay() {
+		
+		periodicalService.sumToPay(new AsyncCallback<Long>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+			@Override
+			public void onSuccess(Long result) {
+				sumToPay = result;
+				sum.setText("Total sum to pay: " + String.valueOf(sumToPay));
+				myJournalListPanel.add(sum);
+			}
+		});
+	}
+
+
+	private void loadListOfPaidJournals() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
 	
 	// load data for signed admin
 	public void adminSigned() {
@@ -363,7 +426,17 @@ public class Periodicals implements EntryPoint {
 
 	}
 	
+	
+	class AddToMyListButton implements ClickHandler {
 
+		@Override
+		public void onClick(ClickEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
 	
 	// The add button logic (for admin)
 	class ListHandler implements ClickHandler, KeyUpHandler {
@@ -421,7 +494,7 @@ public class Periodicals implements EntryPoint {
 			for (int i = listFlexTable.getRowCount()-rawsAdded; i < listFlexTable.getRowCount(); i++) {
 				journals.add(listOfJournals.get(i-1));
 			}
-			signinService.addNewJournals(journals, new AsyncCallback<Void>() {
+			periodicalService.addNewJournals(journals, new AsyncCallback<Void>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
