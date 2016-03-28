@@ -1,0 +1,110 @@
+CREATE TABLE `journals` (
+    `name` varchar(255) NOT NULL,
+  `description` text NULL,
+  `price` int(11) unsigned NOT NULL,  
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `login` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `table1` (
+  `user_id` int(11) unsigned NOT NULL,  
+  `journal_id` int(11) unsigned NOT NULL
+  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  
+  CREATE TABLE `table2` (
+  `user_id` int(11) unsigned NOT NULL,  
+  `journal_id` int(11) unsigned NOT NULL
+  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+
+INSERT INTO `journals` (`id`, `name`, `description`, `price`) VALUES (NULL, 'STRF.ru', 'Интервью, мнения экспертов, анонсы событий в области науки и инноваций. Инновационные проекты. О Федеральной целевой научно-технической программе (руководство, участники и др.).', '1500');
+INSERT INTO `journals` (`id`, `name`, `description`, `price`) VALUES (NULL, 'Наука и жизнь', 'Новости науки и техники, онлайн-интервью с известными учеными, видео. Архив журнала с 1998 года, материалы свежего номера. Форум.', '2000');
+INSERT INTO `journals` (`id`, `name`, `description`, `price`) VALUES (NULL, 'Популярная механика', 'Статьи о технологиях, истории, оружии и др. Архив номеров. Условия подписки.', '2500');
+INSERT INTO `journals` (`id`, `name`, `description`, `price`) VALUES (NULL, 'ПостНаука', 'Публикации по различным отраслям современной науки. Видеозаписи интервью с учёными. Обзоры книг. Сборники ответов на часто задаваемые вопросы.', '1700');
+INSERT INTO `journals` (`id`, `name`, `description`, `price`) VALUES (NULL, 'В мире науки (Scientific American)', 'Публикации о новостях науки и техники, технологии, научные теории. Анонсы журнала, выборочные статьи. Архив (содержание номеров). Информация о подписке.', '2200');
+INSERT INTO `journals` (`id`, `name`, `description`, `price`) VALUES (NULL, 'GlobalScience.ru', 'Научно-популярные статьи и новости на тему космоса, здоровья, технологий, окружающей среды и т.д.', '800');
+INSERT INTO `journals` (`id`, `name`, `description`, `price`) VALUES (NULL, 'НГ-Наука', 'Приложение к «Независимой газете». Публикации о разработках и открытиях в различных отраслях науки, по истории и др.', '1200');
+INSERT INTO `journals` (`id`, `name`, `description`, `price`) VALUES (NULL, '«Relga»', 'Научно-культурологический журнал. Материалы свежего номера научного журнала широкого профиля. Архив выпусков с 1998 года. Сведения о газете. Контакты редакторов.', '2300');
+
+
+
+
+
+
+
+
+CREATE TABLE `user_list` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,  
+  `journal_id` int(11) unsigned NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES `user`(id),
+  FOREIGN KEY (journal_id) REFERENCES `journals`(id),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+
+
+CREATE TABLE `group` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `user` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) unsigned NOT NULL,  
+  `login` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NULL,
+  `phone` varchar(255) NULL,
+  `address` text NULL,
+  FOREIGN KEY (group_id) REFERENCES `group`(id),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `order` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,  
+  `price` int(11) unsigned NOT NULL,  
+  `status` int(11) unsigned NOT NULL,
+  `time` datetime NOT NULL,  
+  FOREIGN KEY (user_id) REFERENCES user(id),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `item` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `in_stock` boolean NOT NULL,
+  `price` int(11) unsigned NOT NULL,  
+  `description` text NULL,
+  `image` varchar(255) NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `order_item` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) unsigned NOT NULL,  
+  `item_id` int(11) unsigned NOT NULL,
+  `count` int(11) unsigned NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES `order`(id),
+  FOREIGN KEY (item_id) REFERENCES `item`(id),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `bill` (
+  `id`       int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) UNSIGNED NOT NULL,
+  `paid`     BOOLEAN          NOT NULL DEFAULT false,
+  `sum`     int(11) UNSIGNED NOT NULL,
+  FOREIGN KEY (`order_id`) REFERENCES `order`(id),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -15,16 +15,22 @@ public interface PeriodicalService extends RemoteService {
 	// client to server
 	String loginServer(boolean newUser, String nameToServer, String pwdToServer);
 	
-	void signoutServer();
+	boolean signoutServer();
 	
 	void addNewJournals(List<Journal> journals);
 	
 	void addMyJournal(Long journalId);
 
+	void deleteMyJournal(Long journalId);
+	
+	void pay(Long sum);
+
 	// server to client
 	List<Journal> loadData(); 
 
 	List<Long> selectedIDs(); 
+
+	List<Long> paidIDs(); 
 
 	Long sumToPay(); 
 

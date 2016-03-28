@@ -15,6 +15,15 @@ h1 {
   color: red;
 }
 
+
+.title {
+	padding-top: 30px;
+	padding-bottom: 6px;
+	font-weight: bold;
+	font-size: 16pt;
+}
+
+
 .watchListHeader {
   background-color: #2062B8;
   color: white;

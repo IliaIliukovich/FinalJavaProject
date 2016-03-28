@@ -19,5 +19,11 @@ public interface PeriodicalServiceAsync {
 
 	void addMyJournal(Long journalId, AsyncCallback<Void> callback);
 
-	void signoutServer(AsyncCallback<Void> callback);
+	void signoutServer(AsyncCallback<Boolean> callback);
+
+	void deleteMyJournal(Long journalId, AsyncCallback<Void> callback);
+
+	void pay(Long sum, AsyncCallback<Void> callback);
+
+	void paidIDs(AsyncCallback<List<Long>> callback);
 }

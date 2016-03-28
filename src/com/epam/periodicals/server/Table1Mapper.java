@@ -1,6 +1,8 @@
 package com.epam.periodicals.server;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
@@ -11,6 +13,9 @@ public interface Table1Mapper {
 
 	@Insert("INSERT INTO table1 (user_id, journal_id) VALUES (#{user_id}, #{journal_id})")
 	void addTable1(Table1 table1);
+
+	@Delete ("delete from table1 where user_id = #{user_id} and journal_id = #{journal_id}")
+	void deleteTable1(Table1 table1);
 	
 	
 }
